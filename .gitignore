@@ -1,3 +1,10 @@
+# Node.js
+node_modules/
+dist/
+
+# Python
 *.pyc
 .coverage
+
+# Project
 /public/users/
