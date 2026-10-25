@@ -54,3 +54,17 @@ def test_load_user_latest_steps(tmp_path: Path) -> None:
         "user1": {"10/12": 15000},
         "user2": {"10/12": 12500},
     }
+
+
+def test_load_user_public_ids(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "build_user_data.open",
+        mocker.mock_open(
+            read_data='{\n  "user1": "token1",\n  "user2": "token2"\n}'
+        ),
+    )
+
+    assert build_user_data.load_user_public_ids() == {
+        "user1": "token1",
+        "user2": "token2",
+    }

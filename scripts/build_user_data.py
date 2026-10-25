@@ -1,7 +1,9 @@
 """Build per-user JSON data."""
 
 import csv
+import json
 from pathlib import Path
+from typing import cast
 
 DATA_DIR = Path("..", "charlie-data", "data")
 
@@ -70,6 +72,12 @@ def load_user_latest_steps(
             break
 
     return user_latest_steps
+
+
+def load_user_public_ids() -> dict[str, str]:
+    """Load user public IDs from the JSON file."""
+    with open(DATA_DIR / "output" / "user_public_ids.json") as json_file:
+        return cast(dict[str, str], json.load(json_file))
 
 
 def main() -> None:
