@@ -76,13 +76,16 @@ def load_user_latest_steps(
 
 def load_user_public_ids() -> dict[str, str]:
     """Load user public IDs from the JSON file."""
-    with open(DATA_DIR / "output" / "user_public_ids.json") as json_file:
-        return cast(dict[str, str], json.load(json_file))
+    return cast(
+        dict[str, str],
+        json.loads((DATA_DIR / "output" / "user_public_ids.json").read_text()),
+    )
 
 
 def main() -> None:
     """Main function."""
-    users = load_users()
+    user_public_ids = load_user_public_ids()
+    users = set(user_public_ids)
     load_user_daily_steps(users)
 
 

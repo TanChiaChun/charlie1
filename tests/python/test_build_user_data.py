@@ -56,12 +56,17 @@ def test_load_user_latest_steps(tmp_path: Path) -> None:
     }
 
 
-def test_load_user_public_ids(mocker: MockerFixture) -> None:
-    mocker.patch(
-        "build_user_data.open",
-        mocker.mock_open(
-            read_data='{\n  "user1": "token1",\n  "user2": "token2"\n}'
-        ),
+def test_load_user_public_ids(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    project_dir = tmp_path / "charlie"
+    project_dir.mkdir()
+    monkeypatch.chdir(project_dir)
+
+    output_dir = project_dir / build_user_data.DATA_DIR / "output"
+    output_dir.mkdir(parents=True)
+    (output_dir / "user_public_ids.json").write_text(
+        '{\n  "user1": "token1",\n  "user2": "token2"\n}'
     )
 
     assert build_user_data.load_user_public_ids() == {
