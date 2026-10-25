@@ -102,8 +102,7 @@ def write_user_json_files(
 def main() -> None:
     """Main function."""
     user_public_ids = load_user_public_ids()
-    users = set(user_public_ids)
-    user_daily_steps = load_user_daily_steps(users)
+    user_daily_steps = load_user_daily_steps(set(user_public_ids))
     write_user_json_files(user_public_ids, user_daily_steps)
 
 
