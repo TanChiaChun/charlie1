@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import cast
 
 DATA_DIR = Path("..", "charlie-data", "data")
+RAW_DATA_DIR = DATA_DIR / "raw"
 
 
 def load_users() -> set[str]:
@@ -30,7 +31,7 @@ def load_user_daily_steps(
     """
     user_daily_steps: dict[str, dict[str, int]] = {}
 
-    raw_data_dirs = sorted((DATA_DIR / "raw").iterdir())
+    raw_data_dirs = sorted(RAW_DATA_DIR.iterdir())
     for raw_data_dir in raw_data_dirs:
         user_latest_steps = load_user_latest_steps(
             raw_data_dir, registered_users
