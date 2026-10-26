@@ -41,6 +41,8 @@ jobs:
           npm ci
           npm ls
 
+      - name: Build user data
+        run: python ./scripts/build_user_data.py
       - name: Build app
         run: npm run build
 
