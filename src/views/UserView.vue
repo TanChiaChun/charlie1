@@ -31,7 +31,7 @@ function formatTimestamp(timestamp: string): string {
 watch(
   () => route.params.id,
   async (id) => {
-    const response = await fetch(`${import.meta.env.BASE_URL}/users/${id}.json`)
+    const response = await fetch(`${import.meta.env.BASE_URL}users/${id}.json`)
     try {
       const result: UserData = await response.json()
       username.value = result.username
