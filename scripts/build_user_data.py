@@ -1,12 +1,22 @@
 """Build per-user JSON data."""
 
 import csv
+import datetime as dt
 import json
 from pathlib import Path
 from typing import cast
 
 DATA_DIR = Path("..", "charlie-data", "data")
 RAW_DATA_DIR = DATA_DIR / "raw"
+
+
+def get_last_fetch() -> str:
+    """Get the timestamp of the latest raw data."""
+    latest_dir = max(RAW_DATA_DIR.iterdir())
+    latest_file = max(latest_dir.iterdir())
+    my_date_time = dt.datetime.strptime(latest_file.stem, "%Y%m%d%H%M%S")
+
+    return my_date_time.isoformat()
 
 
 def load_users() -> set[str]:
@@ -84,7 +94,9 @@ def load_user_public_ids() -> dict[str, str]:
 
 
 def write_user_json_files(
-    user_public_ids: dict[str, str], user_daily_steps: dict[str, dict[str, int]]
+    user_public_ids: dict[str, str],
+    user_daily_steps: dict[str, dict[str, int]],
+    last_fetch: str,
 ) -> None:
     """Write per-user JSON files to the public users directory."""
     output_dir = Path("public", "users")
@@ -93,6 +105,7 @@ def write_user_json_files(
     for username, public_id in user_public_ids.items():
         user_data = {
             "username": username,
+            "lastFetch": last_fetch,
             "dailySteps": user_daily_steps.get(username, {}),
         }
         (output_dir / f"{public_id}.json").write_text(
@@ -102,9 +115,10 @@ def write_user_json_files(
 
 def main() -> None:
     """Main function."""
+    last_fetch = get_last_fetch()
     user_public_ids = load_user_public_ids()
     user_daily_steps = load_user_daily_steps(set(user_public_ids))
-    write_user_json_files(user_public_ids, user_daily_steps)
+    write_user_json_files(user_public_ids, user_daily_steps, last_fetch)
 
 
 if __name__ == "__main__":
