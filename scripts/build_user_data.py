@@ -10,6 +10,29 @@ DATA_DIR = Path("..", "charlie-data", "data")
 RAW_DATA_DIR = DATA_DIR / "raw"
 
 
+def calculate_daily_ranks(
+    user_daily_steps: dict[str, dict[str, int]],
+    last_fetch: str,
+    registered_users: set[str],
+) -> dict[str, int]:
+    """Calculate daily ranks for registered users with nonzero steps."""
+    latest_date_key = last_fetch[5:10].replace("-", "/")
+    steps_by_user = {
+        user: user_daily_steps.get(user, {}).get(latest_date_key, 0)
+        for user in registered_users
+    }
+    sorted_users = sorted(
+        steps_by_user.items(), key=lambda x: x[1], reverse=True
+    )
+    daily_ranks = {
+        user: rank
+        for rank, (user, steps) in enumerate(sorted_users, start=1)
+        if steps > 0
+    }
+
+    return daily_ranks
+
+
 def get_last_fetch() -> str:
     """Get the timestamp of the latest raw data in ISO format."""
     latest_dir = max(RAW_DATA_DIR.iterdir())
