@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-from pytest_mock import MockerFixture
 
 import build_user_data
 
@@ -17,14 +16,6 @@ def test_get_last_fetch(
     (tmp_path / "20261026" / "20261026010502.csv").touch()
 
     assert build_user_data.get_last_fetch() == "2026-10-26T01:05:02"
-
-
-def test_load_users(mocker: MockerFixture) -> None:
-    mocker.patch(
-        "build_user_data.open",
-        mocker.mock_open(read_data="username\nuser1\nuser2"),
-    )
-    assert build_user_data.load_users() == {"user1", "user2"}
 
 
 def test_load_user_daily_steps(

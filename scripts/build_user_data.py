@@ -19,14 +19,6 @@ def get_last_fetch() -> str:
     return my_date_time.isoformat()
 
 
-def load_users() -> set[str]:
-    """Load users from the users CSV file."""
-    with open(DATA_DIR / "input" / "users.csv", newline="") as csv_file:
-        csv_reader = csv.reader(csv_file)
-        next(csv_reader)
-        return {username for [username] in csv_reader}
-
-
 def load_user_daily_steps(
     registered_users: set[str],
 ) -> dict[str, dict[str, int]]:
