@@ -112,6 +112,7 @@ def write_user_json_files(
     user_public_ids: dict[str, str],
     user_daily_steps: dict[str, dict[str, int]],
     last_fetch: str,
+    daily_ranks: dict[str, int],
 ) -> None:
     """Write per-user JSON files to the public users directory.
 
@@ -119,6 +120,7 @@ def write_user_json_files(
         user_public_ids: Mapping of usernames to public IDs.
         user_daily_steps: Mapping of usernames to daily step counts.
         last_fetch: Timestamp of the latest raw data in ISO format.
+        daily_ranks: Mapping of usernames to their daily ranks.
     """
     output_dir = Path("public", "users")
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -128,6 +130,7 @@ def write_user_json_files(
             "username": username,
             "lastFetch": last_fetch,
             "dailySteps": user_daily_steps.get(username, {}),
+            "stats": {"dailyRank": daily_ranks.get(username)},
         }
         (output_dir / f"{public_id}.json").write_text(
             json.dumps(user_data, ensure_ascii=False, indent=2)
@@ -140,7 +143,12 @@ def main() -> None:
     user_public_ids = load_user_public_ids()
     registered_users = set(user_public_ids)
     user_daily_steps = load_user_daily_steps(registered_users)
-    write_user_json_files(user_public_ids, user_daily_steps, last_fetch)
+    daily_ranks = calculate_daily_ranks(
+        user_daily_steps, last_fetch, registered_users
+    )
+    write_user_json_files(
+        user_public_ids, user_daily_steps, last_fetch, daily_ranks
+    )
 
 
 if __name__ == "__main__":
